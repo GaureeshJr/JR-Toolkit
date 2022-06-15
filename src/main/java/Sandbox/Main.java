@@ -1,4 +1,4 @@
-import com.jrtk.client.Application;
+package Sandbox;
 
 public class Main {
 

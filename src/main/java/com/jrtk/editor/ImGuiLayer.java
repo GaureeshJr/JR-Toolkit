@@ -1,34 +1,34 @@
 package com.jrtk.editor;
 
+import Sandbox.SandoxLayer;
+import com.jrtk.client.Application;
 import com.jrtk.client.Layer;
 import com.jrtk.client.Window;
 import com.jrtk.engine.Key;
 import com.jrtk.engine.Mouse;
 import com.jrtk.utils.Time;
-import imgui.ImFontAtlas;
-import imgui.ImFontConfig;
-import imgui.ImGui;
-import imgui.ImGuiIO;
+import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
-import imgui.type.ImBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ImGuiLayer extends Layer {
 
     private Window glfwWindow;
+    private Application application;
 
     private final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
 
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
 
-    public ImGuiLayer(String name, int index, Window window) {
+    public ImGuiLayer(String name, int index, Window window, Application app) {
         super(name, index);
         this.glfwWindow = window;
+        this.application = app;
     }
 
     @Override
@@ -189,6 +189,7 @@ public class ImGuiLayer extends Layer {
 
         ImGui.newFrame();
 
+        drawUI();
         ImGui.showDemoWindow();
 
         ImGui.render();
@@ -235,4 +236,68 @@ public class ImGuiLayer extends Layer {
         imGuiGl3.dispose();
         ImGui.destroyContext();
     }
+
+    private void drawUI()
+    {
+
+        int ID = application.layerStack.getLayer(SandoxLayer.class).outputBuffer.getOutputTex();
+        ImGui.begin("Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+
+        ImVec2 windowSize = getLargestSizeForViewport();
+        ImVec2 windowPos = getCentredPosForViewport(windowSize);
+
+        ImGui.setCursorPos(windowPos.x, windowPos.y);
+
+        ImVec2 topleft = new ImVec2();
+        ImGui.getCursorScreenPos(topleft);
+        topleft.x -= ImGui.getScrollX();
+        topleft.y -= ImGui.getScrollY();
+
+        LX = topleft.x;
+        BY = topleft.y;
+        RX = topleft.x + windowSize.x;
+        TY = topleft.y + windowSize.y;
+
+
+        ImGui.image(ID, windowSize.x, windowSize.y, 0, 1, 1, 0);
+
+
+        ImGui.end();
+    }
+
+
+    private static float LX, RX, TY, BY;
+
+    private static ImVec2 getLargestSizeForViewport()
+    {
+        ImVec2 windowSize = new ImVec2();
+        ImGui.getContentRegionAvail(windowSize);
+        windowSize.x -= ImGui.getScrollX();
+        windowSize.y -= ImGui.getScrollY();
+
+        float aspectW = windowSize.x;
+        float aspectH = aspectW/(2.0f);
+        if(aspectH > windowSize.y){
+            //We bust switch to pillarbox mode
+            aspectH = windowSize.y;
+            aspectW = aspectH*(2.0f);
+        }
+
+        return new ImVec2(aspectW, aspectH);
+    }
+
+    private static ImVec2 getCentredPosForViewport(ImVec2 aspectSize)
+    {
+        ImVec2 windowSize = new ImVec2();
+        ImGui.getContentRegionAvail(windowSize);
+        windowSize.x -= ImGui.getScrollX();
+        windowSize.y -= ImGui.getScrollY();
+
+        float viewportX = (windowSize.x/2.0f) - (aspectSize.x/2.0f);
+        float viewportY = (windowSize.y/2.0f) - (aspectSize.y/2.0f);
+
+        return new ImVec2(viewportX + ImGui.getCursorPosX(), viewportY + ImGui.getCursorPosY());
+    }
+
+
 }

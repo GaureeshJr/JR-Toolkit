@@ -33,7 +33,7 @@ public class LayerStack {
         l.OnAttach();
     }
 
-    public <T extends Layer> T getComponent(Class<T> componentClass){
+    public <T extends Layer> T getLayer(Class<T> componentClass){
         for (Layer l: layers) {
             if(componentClass.isAssignableFrom(l.getClass())){
                 try{

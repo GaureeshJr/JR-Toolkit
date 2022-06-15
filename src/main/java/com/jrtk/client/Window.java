@@ -42,7 +42,6 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-
         // Create the window
         windowPtr = glfwCreateWindow(resolution.x, resolution.y, title, NULL, NULL);
         if ( windowPtr == NULL )
