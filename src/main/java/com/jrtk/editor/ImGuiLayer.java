@@ -12,6 +12,10 @@ import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
+import imgui.type.ImBoolean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -19,6 +23,8 @@ public class ImGuiLayer extends Layer {
 
     private Window glfwWindow;
     private Application application;
+
+    private List<editorWindow> editorWindows;
 
     private final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
 
@@ -29,6 +35,7 @@ public class ImGuiLayer extends Layer {
         super(name, index);
         this.glfwWindow = window;
         this.application = app;
+        this.editorWindows = new ArrayList<>();
     }
 
     @Override
@@ -181,6 +188,62 @@ public class ImGuiLayer extends Layer {
 
         imGuiGl3.init("#version 330 core");
 
+        //------------------------------------theme----------------------------------------------------
+
+        ImGuiStyle style = ImGui.getStyle();
+        style.setWindowPadding(0,0);
+        style.setColor(ImGuiCol.Text,                 1.00f, 1.00f, 1.00f, 1.00f);
+        style.setColor(ImGuiCol.TextDisabled,         0.50f, 0.50f, 0.50f, 1.00f);
+        style.setColor(ImGuiCol.WindowBg,             0.13f, 0.14f, 0.15f, 1.00f);
+        style.setColor(ImGuiCol.ChildBg,              0.13f, 0.14f, 0.15f, 1.00f);
+        style.setColor(ImGuiCol.PopupBg,              0.13f, 0.14f, 0.15f, 1.00f);
+        style.setColor(ImGuiCol.Border,               0.43f, 0.43f, 0.50f, 0.50f);
+        style.setColor(ImGuiCol.BorderShadow,         0.00f, 0.00f, 0.00f, 0.00f);
+        style.setColor(ImGuiCol.FrameBg,              0.25f, 0.25f, 0.25f, 1.00f);
+        style.setColor(ImGuiCol.FrameBgHovered,       0.38f, 0.38f, 0.38f, 1.00f);
+        style.setColor(ImGuiCol.FrameBgActive,        0.67f, 0.67f, 0.67f, 0.39f);
+        style.setColor(ImGuiCol.TitleBg,              0.08f, 0.08f, 0.09f, 1.00f);
+        style.setColor(ImGuiCol.TitleBgActive,        0.08f, 0.08f, 0.09f, 1.00f);
+        style.setColor(ImGuiCol.TitleBgCollapsed,     0.00f, 0.00f, 0.00f, 0.51f);
+        style.setColor(ImGuiCol.MenuBarBg,            0.14f, 0.14f, 0.14f, 1.00f);
+        style.setColor(ImGuiCol.ScrollbarBg,          0.02f, 0.02f, 0.02f, 0.53f);
+        style.setColor(ImGuiCol.ScrollbarGrab,        0.31f, 0.31f, 0.31f, 1.00f);
+        style.setColor(ImGuiCol.ScrollbarGrabHovered, 0.41f, 0.41f, 0.41f, 1.00f);
+        style.setColor(ImGuiCol.ScrollbarGrabActive,  0.51f, 0.51f, 0.51f, 1.00f);
+        style.setColor(ImGuiCol.CheckMark,            0.11f, 0.64f, 0.92f, 1.00f);
+        style.setColor(ImGuiCol.SliderGrab,           0.11f, 0.64f, 0.92f, 1.00f);
+        style.setColor(ImGuiCol.SliderGrabActive,     0.08f, 0.50f, 0.72f, 1.00f);
+        style.setColor(ImGuiCol.Button,               0.25f, 0.25f, 0.25f, 1.00f);
+        style.setColor(ImGuiCol.ButtonHovered,        0.38f, 0.38f, 0.38f, 1.00f);
+        style.setColor(ImGuiCol.ButtonActive,         0.67f, 0.67f, 0.67f, 0.39f);
+        style.setColor(ImGuiCol.Header,               0.22f, 0.22f, 0.22f, 1.00f);
+        style.setColor(ImGuiCol.HeaderHovered,        0.25f, 0.25f, 0.25f, 1.00f);
+        style.setColor(ImGuiCol.HeaderActive,         0.67f, 0.67f, 0.67f, 0.39f);
+        style.setColor(ImGuiCol.Separator,            style.getColor(ImGuiCol.Border).x,style.getColor(ImGuiCol.Border).y,style.getColor(ImGuiCol.Border).z,style.getColor(ImGuiCol.Border).w);
+        style.setColor(ImGuiCol.SeparatorHovered,     0.41f, 0.42f, 0.44f, 1.00f);
+        style.setColor(ImGuiCol.SeparatorActive,      0.26f, 0.59f, 0.98f, 0.95f);
+        style.setColor(ImGuiCol.ResizeGrip,           0.00f, 0.00f, 0.00f, 0.00f);
+        style.setColor(ImGuiCol.ResizeGripHovered,    0.29f, 0.30f, 0.31f, 0.67f);
+        style.setColor(ImGuiCol.ResizeGripActive,     0.26f, 0.59f, 0.98f, 0.95f);
+        style.setColor(ImGuiCol.Tab,                  0.08f, 0.08f, 0.09f, 0.83f);
+        style.setColor(ImGuiCol.TabHovered,           0.33f, 0.34f, 0.36f, 0.83f);
+        style.setColor(ImGuiCol.TabActive,            0.23f, 0.23f, 0.24f, 1.00f);
+        style.setColor(ImGuiCol.TabUnfocused,         0.08f, 0.08f, 0.09f, 1.00f);
+        style.setColor(ImGuiCol.TabUnfocusedActive,   0.13f, 0.14f, 0.15f, 1.00f);
+        style.setColor(ImGuiCol.DockingPreview,       0.26f, 0.59f, 0.98f, 0.70f);
+        style.setColor(ImGuiCol.DockingEmptyBg,       0.20f, 0.20f, 0.20f, 1.00f);
+        style.setColor(ImGuiCol.PlotLines,            0.61f, 0.61f, 0.61f, 1.00f);
+        style.setColor(ImGuiCol.PlotLinesHovered,     1.00f, 0.43f, 0.35f, 1.00f);
+        style.setColor(ImGuiCol.PlotHistogram,        0.90f, 0.70f, 0.00f, 1.00f);
+        style.setColor(ImGuiCol.PlotHistogramHovered, 1.00f, 0.60f, 0.00f, 1.00f);
+        style.setColor(ImGuiCol.TextSelectedBg,       0.26f, 0.59f, 0.98f, 0.35f);
+        style.setColor(ImGuiCol.DragDropTarget,       0.11f, 0.64f, 0.92f, 1.00f);
+        style.setColor(ImGuiCol.NavHighlight,         0.26f, 0.59f, 0.98f, 1.00f);
+        style.setColor(ImGuiCol.NavWindowingHighlight,1.00f, 1.00f, 1.00f, 0.70f);
+        style.setColor(ImGuiCol.NavWindowingDimBg,    0.80f, 0.80f, 0.80f, 0.20f);
+        style.setColor(ImGuiCol.ModalWindowDimBg,     0.80f, 0.80f, 0.80f, 0.35f);
+        style.setGrabRounding(2.3f);
+        //---------------------------------------------------------------------------------
     }
 
     @Override
@@ -189,9 +252,11 @@ public class ImGuiLayer extends Layer {
 
         ImGui.newFrame();
 
+
+        setupDocking();
         drawUI();
         ImGui.showDemoWindow();
-
+        ImGui.end();
         ImGui.render();
 
         endFrame();
@@ -237,67 +302,55 @@ public class ImGuiLayer extends Layer {
         ImGui.destroyContext();
     }
 
+
+
     private void drawUI()
     {
-
-        int ID = application.layerStack.getLayer(SandoxLayer.class).outputBuffer.getOutputTex();
-        ImGui.begin("Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-
-        ImVec2 windowSize = getLargestSizeForViewport();
-        ImVec2 windowPos = getCentredPosForViewport(windowSize);
-
-        ImGui.setCursorPos(windowPos.x, windowPos.y);
-
-        ImVec2 topleft = new ImVec2();
-        ImGui.getCursorScreenPos(topleft);
-        topleft.x -= ImGui.getScrollX();
-        topleft.y -= ImGui.getScrollY();
-
-        LX = topleft.x;
-        BY = topleft.y;
-        RX = topleft.x + windowSize.x;
-        TY = topleft.y + windowSize.y;
-
-
-        ImGui.image(ID, windowSize.x, windowSize.y, 0, 1, 1, 0);
-
-
-        ImGui.end();
-    }
-
-
-    private static float LX, RX, TY, BY;
-
-    private static ImVec2 getLargestSizeForViewport()
-    {
-        ImVec2 windowSize = new ImVec2();
-        ImGui.getContentRegionAvail(windowSize);
-        windowSize.x -= ImGui.getScrollX();
-        windowSize.y -= ImGui.getScrollY();
-
-        float aspectW = windowSize.x;
-        float aspectH = aspectW/(2.0f);
-        if(aspectH > windowSize.y){
-            //We bust switch to pillarbox mode
-            aspectH = windowSize.y;
-            aspectW = aspectH*(2.0f);
+        for(editorWindow e : editorWindows)
+        {
+            if(e.enabled)
+            {
+                e.Show();
+            }
         }
-
-        return new ImVec2(aspectW, aspectH);
     }
 
-    private static ImVec2 getCentredPosForViewport(ImVec2 aspectSize)
+
+    public void addEditorWindow(editorWindow w)
     {
-        ImVec2 windowSize = new ImVec2();
-        ImGui.getContentRegionAvail(windowSize);
-        windowSize.x -= ImGui.getScrollX();
-        windowSize.y -= ImGui.getScrollY();
-
-        float viewportX = (windowSize.x/2.0f) - (aspectSize.x/2.0f);
-        float viewportY = (windowSize.y/2.0f) - (aspectSize.y/2.0f);
-
-        return new ImVec2(viewportX + ImGui.getCursorPosX(), viewportY + ImGui.getCursorPosY());
+        this.editorWindows.add(w);
     }
 
+    public <T extends editorWindow> T getEditorWindow(Class<T> windowClass){
+        for (editorWindow e: editorWindows) {
+            if(windowClass.isAssignableFrom(e.getClass())){
+                try{
+                    return windowClass.cast(e);
+                }catch (ClassCastException r){
+                    r.printStackTrace();
+                    assert false : "Err: Casting component";
+                }
+            }
+        }
+        return null;
+    }
 
+    private void setupDocking() {
+        int windowFlags =  ImGuiWindowFlags.NoDocking;
+
+        ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always);
+        ImGui.setNextWindowSize(application.window.getResolution().x, application.window.getResolution().y);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding , 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize , 0.0f);
+
+        windowFlags |= ImGuiWindowFlags.NoTitleBar| ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize| ImGuiWindowFlags.NoMove |ImGuiWindowFlags.NoBringToFrontOnFocus
+                |ImGuiWindowFlags.NoNavFocus;
+
+
+        ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
+        ImGui.popStyleVar(2);
+
+        //Dockspace
+        ImGui.dockSpace(ImGui.getID("Dockspace"));
+    }
 }
