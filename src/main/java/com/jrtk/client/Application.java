@@ -1,5 +1,9 @@
 package com.jrtk.client;
 
+import com.jrtk.utils.Time;
+
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 public abstract class Application {
 
     public Window window;
@@ -27,11 +31,19 @@ public abstract class Application {
 
     public void Run()
     {
+        float begintime = (float)glfwGetTime();
+        float endtime;
+
         while(window.shouldNotClose())
         {
+
             this.OnUpdate();
             layerStack.Update();
             window.update();
+
+            endtime = (float) glfwGetTime();
+            Time.deltaTime = endtime - begintime;
+            begintime = endtime;
         }
 
 

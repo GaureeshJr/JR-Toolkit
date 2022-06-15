@@ -1,12 +1,14 @@
 package com.jrtk.client;
 
+import com.jrtk.engine.Key;
+import com.jrtk.engine.Mouse;
+import com.jrtk.utils.Time;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -40,6 +42,7 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
+
         // Create the window
         windowPtr = glfwCreateWindow(resolution.x, resolution.y, title, NULL, NULL);
         if ( windowPtr == NULL )
@@ -52,8 +55,8 @@ public class Window {
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowPtr);
-        // Enable v-sync
-        glfwSwapInterval(1);
+        // disable   v-sync
+        glfwSwapInterval(0);
 
         // Make the window visible
         glfwShowWindow(windowPtr);
@@ -66,14 +69,28 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
+        glfwSetCursorPosCallback           (windowPtr , Mouse::MousePosCallback);
+        glfwSetMouseButtonCallback         (windowPtr , Mouse::MouseButtonCallback);
+        glfwSetScrollCallback              (windowPtr , Mouse::MouseScrollCallback);
+        glfwSetKeyCallback                 (windowPtr ,   Key::KeyCallBack);
 
     }
+
+    float timer = 0;
 
     public void update()
     {
         //Final frame update
         glfwSwapBuffers(windowPtr);
         glfwPollEvents();
+
+        timer += Time.deltaTime;
+
+        if(timer >= 1)
+        {
+            glfwSetWindowTitle(windowPtr, title + " [FPS: " + (int)(1/ Time.deltaTime) + "]");
+            timer = 0;
+        }
     }
 
     public void delete()
@@ -90,5 +107,9 @@ public class Window {
     public boolean shouldNotClose()
     {
         return !glfwWindowShouldClose(windowPtr);
+    }
+
+    public long getWindowPtr() {
+        return windowPtr;
     }
 }
