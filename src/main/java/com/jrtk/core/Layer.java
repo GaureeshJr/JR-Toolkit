@@ -1,4 +1,4 @@
-package com.jrtk.client;
+package com.jrtk.core;
 
 public abstract class Layer
 {

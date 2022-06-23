@@ -1,4 +1,4 @@
-package com.jrtk.engine;
+package com.jrtk.render;
 import static org.lwjgl.opengl.GL30.*;
 
 public class FrameBuffer {

@@ -1,7 +1,7 @@
 package com.jrtk.client;
 
-import com.jrtk.engine.Key;
-import com.jrtk.engine.Mouse;
+import com.jrtk.core.Key;
+import com.jrtk.core.Mouse;
 import com.jrtk.utils.Time;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -103,8 +103,7 @@ public class Window {
         glfwSetErrorCallback(null).free();
     }
 
-    public boolean shouldNotClose()
-    {
+    public boolean shouldNotClose() {
         return !glfwWindowShouldClose(windowPtr);
     }
 

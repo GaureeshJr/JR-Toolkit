@@ -1,8 +1,8 @@
-package com.jrtk.engine;
+package com.jrtk.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Key {
+public class Key {  //Input callback class [can be used by itself, but is recommended to be used with the wrapper class 'Input']
     private static Key instance;
     private boolean keyPressed[] = new boolean[350];
 

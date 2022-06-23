@@ -1,4 +1,4 @@
-package com.jrtk.engine;
+package com.jrtk.render;
 
 import org.lwjgl.BufferUtils;
 
@@ -16,14 +16,14 @@ public class Texture {
     private transient int texID;
     private int width, height;
 
-    public Texture(String filePath, int filter){
+    public Texture(String filePath, int filter){    //Normal texture loading function
 
         this.filePath = filePath;
 
         this.Init(filePath, filter);
     }
 
-    public Texture(int width, int height, int filtering) {
+    public Texture(int width, int height, int filtering) {  //Generated texture which does not load in texture using stb
         this.filePath = "Generated";
 
         texID = glGenTextures();

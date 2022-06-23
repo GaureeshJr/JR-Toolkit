@@ -1,11 +1,10 @@
 package com.jrtk.editor;
 
-import Sandbox.SandoxLayer;
 import com.jrtk.client.Application;
-import com.jrtk.client.Layer;
+import com.jrtk.core.Layer;
 import com.jrtk.client.Window;
-import com.jrtk.engine.Key;
-import com.jrtk.engine.Mouse;
+import com.jrtk.core.Key;
+import com.jrtk.core.Mouse;
 import com.jrtk.utils.Time;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
@@ -44,6 +43,8 @@ public class ImGuiLayer extends Layer {
         // This line is critical for Dear ImGui to work.
         ImGui.createContext();
 
+
+
         // ------------------------------------------------------------
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
@@ -53,7 +54,7 @@ public class ImGuiLayer extends Layer {
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
         io.setBackendPlatformName("imgui_java_impl_glfw");
-
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         // ------------------------------------------------------------
         // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
         final int[] keyMap = new int[ImGuiKey.COUNT];
@@ -144,7 +145,7 @@ public class ImGuiLayer extends Layer {
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
 
             if(!io.getWantCaptureMouse()){
-                Mouse.MouseScrollCallback(w, xOffset, yOffset);
+                Mouse.MouseScrollCallback(w, xOffset, yOffset); 
             }
 
         });
@@ -194,7 +195,7 @@ public class ImGuiLayer extends Layer {
         style.setWindowPadding(0,0);
         style.setColor(ImGuiCol.Text,                 1.00f, 1.00f, 1.00f, 1.00f);
         style.setColor(ImGuiCol.TextDisabled,         0.50f, 0.50f, 0.50f, 1.00f);
-        style.setColor(ImGuiCol.WindowBg,             0.13f, 0.14f, 0.15f, 1.00f);
+        style.setColor(ImGuiCol.WindowBg,             0.13f, 0.14f, 0.15f, 0.90f);
         style.setColor(ImGuiCol.ChildBg,              0.13f, 0.14f, 0.15f, 1.00f);
         style.setColor(ImGuiCol.PopupBg,              0.13f, 0.14f, 0.15f, 1.00f);
         style.setColor(ImGuiCol.Border,               0.43f, 0.43f, 0.50f, 0.50f);
@@ -243,6 +244,7 @@ public class ImGuiLayer extends Layer {
         style.setColor(ImGuiCol.NavWindowingDimBg,    0.80f, 0.80f, 0.80f, 0.20f);
         style.setColor(ImGuiCol.ModalWindowDimBg,     0.80f, 0.80f, 0.80f, 0.35f);
         style.setGrabRounding(2.3f);
+        style.setWindowRounding(5f);
         //---------------------------------------------------------------------------------
     }
 
@@ -252,12 +254,22 @@ public class ImGuiLayer extends Layer {
 
         ImGui.newFrame();
 
-
         setupDocking();
+
         drawUI();
-        ImGui.showDemoWindow();
+
         ImGui.end();
+
         ImGui.render();
+        imGuiGl3.renderDrawData(ImGui.getDrawData());
+
+        if(ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable))
+        {
+            final long backupWindowPtr = org.lwjgl.glfw.GLFW.glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+            org.lwjgl.glfw.GLFW.glfwMakeContextCurrent(backupWindowPtr);
+        }
 
         endFrame();
     }
@@ -306,6 +318,7 @@ public class ImGuiLayer extends Layer {
 
     private void drawUI()
     {
+
         for(editorWindow e : editorWindows)
         {
             if(e.enabled)

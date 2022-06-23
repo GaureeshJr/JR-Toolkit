@@ -1,8 +1,6 @@
-package Sandbox;
+package com.Sandbox;
 
 public class Main {
-
-
 
     public static void main(String[] args) {
         SandboxApp app = new SandboxApp();

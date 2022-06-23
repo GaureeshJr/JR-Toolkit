@@ -1,18 +1,15 @@
-package com.jrtk.engine;
+package com.jrtk.core;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector4f;
+
 
 import static org.lwjgl.glfw.GLFW.*;
-public class Mouse {
+public class Mouse { //Input callback class [can be used by itself, but is recommended to be used with the wrapper class 'Input']
+
     private static Mouse instance;
     private double scrollX , scrollY;
     private double xPos , yPos , lastY , lastX;
     private boolean mouseButtonPressed[] = new boolean[3];
     private boolean dragging;
-    private Vector2f gameViewPos;
-    private Vector2f gameViewSize;
 
     private Mouse(){
         this.scrollX = 0.0;
@@ -21,8 +18,6 @@ public class Mouse {
         this. yPos = 0.0;
         this.lastX = 0.0;
         this.lastY = 0.0;
-        gameViewPos = new Vector2f();
-        gameViewSize = new Vector2f();
     }
 
     public static Mouse get()
@@ -67,7 +62,8 @@ public class Mouse {
         return(float)get().xPos;
     }
     public static float getY(){
-        return(float)get().yPos;
+
+        return (float)get().yPos;
     }
     public static float getDeltaX(){
         return (float) (get().lastX - get().xPos);
@@ -81,11 +77,11 @@ public class Mouse {
     public static float getScrollY(){
         return (float)get().scrollY;
     }
-    public static boolean isDraggin(){
+    public static boolean isDragging(){
         return get().dragging;
     }
 
-    public static boolean isMouseButtonDown(int button){
+    public static boolean isMouseBUttonPressed(int button){
         if(button < get().mouseButtonPressed.length) {
             return get().mouseButtonPressed[button];
         }else
@@ -94,11 +90,4 @@ public class Mouse {
         }
     }
 
-    public static void setGameViewPos(Vector2f gameViewPos) {
-        get().gameViewPos.set(gameViewPos);
-    }
-
-    public static void setGameViewSize(Vector2f gameViewSize) {
-        get().gameViewSize.set(gameViewSize);
-    }
 }

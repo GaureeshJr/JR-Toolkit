@@ -1,6 +1,6 @@
 package com.jrtk.editor;
 
-import Sandbox.SandoxLayer;
+import com.Sandbox.SandoxLayer;
 import com.jrtk.client.Application;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -8,12 +8,10 @@ import imgui.flag.ImGuiWindowFlags;
 
 public class Viewport extends editorWindow{
 
-    private Application application;
 
-    public Viewport(Application app)
+    public Viewport(Application a)
     {
-        super();
-        this.application = app;
+        super(a);
     }
 
     private static float LX, RX, TY, BY;
