@@ -38,14 +38,18 @@ public abstract class Application {
         float begintime = (float)glfwGetTime();
         float endtime;
 
+        glEnable(GL_DEPTH_TEST);
+
         while(window.shouldNotClose())
         {
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             this.OnUpdate();
             layerStack.Update();
             window.update();
+
+
 
             endtime = (float) glfwGetTime();
             Time.deltaTime = endtime - begintime;

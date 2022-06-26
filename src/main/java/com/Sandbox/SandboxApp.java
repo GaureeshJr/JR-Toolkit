@@ -21,7 +21,8 @@ public class SandboxApp extends Application {
     @Override
     protected void OnInit() {
         this.layerStack.pushLayer(new SandoxLayer("gameLayer", 0, this.window));
-        this.layerStack.pushLayer(new ImGuiLayer("Imgui Layer", 1, this.window, this));
+
+        this.layerStack.pushLayer(new ImGuiLayer("uiLayer", 1, this.window, this));
 
         this.layerStack.getLayer(ImGuiLayer.class).addEditorWindow(new FileExplorer(this, "src/"));
         this.layerStack.getLayer(ImGuiLayer.class).addEditorWindow(new Viewport(this));

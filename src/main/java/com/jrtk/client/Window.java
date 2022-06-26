@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -72,6 +73,7 @@ public class Window {
         glfwSetMouseButtonCallback         (windowPtr , Mouse::MouseButtonCallback);
         glfwSetScrollCallback              (windowPtr , Mouse::MouseScrollCallback);
         glfwSetKeyCallback                 (windowPtr ,   Key::KeyCallBack);
+
 
     }
 
