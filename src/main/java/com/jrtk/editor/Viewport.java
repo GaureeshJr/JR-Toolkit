@@ -2,16 +2,18 @@ package com.jrtk.editor;
 
 import com.Sandbox.SandoxLayer;
 import com.jrtk.client.Application;
+import com.jrtk.render.FrameBuffer;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 
 public class Viewport extends editorWindow{
 
-
-    public Viewport(Application a)
+    private FrameBuffer viewBuffer;
+    public Viewport(Application a, FrameBuffer buffer)
     {
         super(a);
+        this.viewBuffer = buffer;
     }
 
     private static float LX, RX, TY, BY;
@@ -49,7 +51,7 @@ public class Viewport extends editorWindow{
 
     @Override
     public void Show() {
-        int ID = application.layerStack.getLayer(SandoxLayer.class).outputBuffer.getOutputTex();
+        int ID = viewBuffer.getOutputTex();
         ImGui.begin("Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
 
         ImVec2 windowSize = getLargestSizeForViewport();

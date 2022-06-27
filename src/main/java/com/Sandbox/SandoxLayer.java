@@ -1,90 +1,81 @@
 package com.Sandbox;
 
-import com.jrtk.core.Input;
+import com.jrtk.client.Application;
 import com.jrtk.core.Layer;
 import com.jrtk.client.Window;
+import com.jrtk.editor.ImGuiLayer;
+import com.jrtk.editor.Viewport;
 import com.jrtk.render.*;
-import com.jrtk.utils.Load;
-import com.jrtk.utils.ModelLoader;
 import com.jrtk.utils.Time;
+import imgui.ImGui;
 import org.joml.*;
-import org.joml.Math;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class SandoxLayer extends Layer {
 
     private Window window;
     public FrameBuffer outputBuffer;
+    private Application application;
 
-    private Mesh[] meshes;
-    private Shader shader;
-    private Matrix4f model, camera;
+    private Vector2i layerResolution;
 
-
-
-    public SandoxLayer(String name, int index, Window window) {
+    public SandoxLayer(String name, int index, Window window, Application application) {
         super(name, index);
         this.window = window;
-        this.model = new Matrix4f();
-        this.camera = new Matrix4f();
+        this.application = application;
+        this.layerResolution = new Vector2i(800, 400);
     }
 
     @Override
     public void OnAttach() {
 
-        shader = new Shader("assets/shaders/default.glsl");
-        shader.compile();
+        layerResolution = new Vector2i(1920, 1080);
 
+        outputBuffer = new FrameBuffer(layerResolution.x, layerResolution.y, GL_NEAREST);
 
-        outputBuffer = new FrameBuffer(400, 200, GL_NEAREST);
-
-        meshes = Load.Meshes("assets/models/Scene.obj");
-
-        model.identity().translate(0, -0.1f, -1.25f).scale(1f);
-        camera.identity();
-
-        lightDirection = new Vector3f(0, 1, 1);
     }
 
-    private Vector3f lightDirection;
-
-
+    boolean firstTime = true;
 
     @Override
     public void OnUpdate() {
+        if(firstTime)
+        {
+            firstTime = false;
+
+            this.application.layerStack.getLayer(ImGuiLayer.class).addEditorWindow(new Viewport(application, outputBuffer));
+            System.out.println("First Update");
+        }
+
 
         outputBuffer.Bind();
-        glViewport(0, 0, 400, 200);
+        glViewport(0, 0, layerResolution.x, layerResolution.y);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        if(Input.getKey(GLFW_KEY_D))
-            model.rotate(Time.deltaTime, 0, 1, 0);
-        if(Input.getKey(GLFW_KEY_A))
-            model.rotate(-Time.deltaTime, 0, 1, 0);
-
-        camera.identity().perspective(Math.toRadians(50), 2, 0.001f, 1000f).
-                lookAt(0, 1, 1,
-                        0, 0, -1.25f,
-                        0, 1, 0);
-
-        shader.UploadMat4f("modelMatrix", model);
-        shader.UploadMat4f("camMatrix", camera);
-        shader.UploadVec3f("lightDirection", lightDirection);
 
 
-        for(int i = 0; i < meshes.length; i++)
-        {
-            meshes[i].Draw(shader, GL_TRIANGLES);
-        }
 
         outputBuffer.Unbind();
 
     }
 
+    float timer = 1;
+    float FT;
+
     public void EditorUI(){
+        timer += Time.deltaTime;
+
+        ImGui.begin("Sandbox Layer");
+        if(timer >= 1)
+        {
+            FT = frameTime;
+            timer = 0;
+        }
+        ImGui.text("FRAME TIME: " + FT);
+
+        ImGui.end();
     }
 
     @Override

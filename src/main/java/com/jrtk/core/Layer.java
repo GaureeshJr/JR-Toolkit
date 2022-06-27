@@ -5,6 +5,8 @@ public abstract class Layer
     protected int index;
     protected String name;
 
+    public float frameTime;
+
     public abstract void OnAttach();
     public abstract void OnUpdate();
     public abstract void OnDetach();

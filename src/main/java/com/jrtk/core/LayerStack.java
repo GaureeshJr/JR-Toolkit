@@ -3,6 +3,8 @@ package com.jrtk.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 //  The engine's design is based on using 'Layers' for the render and other functions,
 //  currently the layers are used in the order that you PUSHED then into the LAYER-STACK.
 //  But in the future, we will use the used defined 'index' of a layer to arrange them in
@@ -22,7 +24,11 @@ public class LayerStack
     {
         for(Layer l : layers)
         {
+            float beginTime = (float)glfwGetTime();
             l.OnUpdate();
+            float endTime = (float)glfwGetTime();
+            float fT = endTime - beginTime;
+            l.frameTime = fT;
         }
     }
 
