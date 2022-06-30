@@ -4,13 +4,18 @@ import com.jrtk.client.Application;
 import com.jrtk.core.Layer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
-import imgui.flag.ImGuiConfigFlags;
+import imgui.ImGuiStyle;
+import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImBoolean;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 
 public class ImGuiLayer extends Layer {
 
@@ -36,6 +41,12 @@ public class ImGuiLayer extends Layer {
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+
+        ImGuiStyle style = ImGui.getStyle();
+
+        style.setColor(ImGuiCol.Border, 1.0f,1.0f, 0.0f, 1.0f);
+        style.setWindowPadding(3.0f, 3.0f);
 
         imguiGLFW.init(windowPtr, true);
         imGuiImplGl3.init(glslVersion);
@@ -100,5 +111,29 @@ public class ImGuiLayer extends Layer {
             }
         }
         return null;
+    }
+
+    int[] dockX= new int[] {0};
+    int[] dockY= new int[] {0};
+
+    private void setupDocking() {
+        int windowFlags = ImGuiWindowFlags.NoDocking;
+
+        glfwGetWindowPos(application.window.getWindowPtr(), dockX, dockY);
+
+        ImGui.setNextWindowPos(dockX[0], dockY[0], ImGuiCond.Always);
+        ImGui.setNextWindowSize(application.window.getResolution().x, application.window.getResolution().y);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding , 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize , 0.0f);
+
+        windowFlags |= ImGuiWindowFlags.NoTitleBar| ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize| ImGuiWindowFlags.NoMove |ImGuiWindowFlags.NoBringToFrontOnFocus
+                |ImGuiWindowFlags.NoNavFocus;
+
+
+        ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
+        ImGui.popStyleVar(2);
+
+        //Dockspace
+        ImGui.dockSpace(ImGui.getID("Dockspace"));
     }
 }

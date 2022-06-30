@@ -21,6 +21,11 @@ public class Shader
 
     public Shader(String filepath) {
         this.filepath = filepath;
+        this.compile();
+    }
+
+    public void compile(){
+
         try {
             String source = new String(Files.readAllBytes(Paths.get(filepath)));
             String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
@@ -55,9 +60,7 @@ public class Shader
             assert false : "Error: Could not open file for shader: '" + filepath + "'";
         }
 
-    }
 
-    public void compile(){
         int vertexID, fragmentID;
         // First load and compile the vertex shader
         vertexID = glCreateShader(GL_VERTEX_SHADER);
@@ -167,6 +170,14 @@ public class Shader
         use();
         glUniform1i(varLocation , value);
         detach();
+    }
+
+    public void UploadBoolean(String varName, boolean bool){
+        if(bool == false){
+            this.UploadInt(varName, 0);
+        }else{
+            this.UploadInt(varName, 1);
+        }
     }
 
     public void UploadTexture2d(String varName , int slot){

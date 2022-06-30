@@ -2,7 +2,6 @@ package com.Sandbox;
 
 import com.jrtk.client.Application;
 import com.jrtk.client.Window;
-import com.jrtk.editor.FileExplorer;
 import com.jrtk.editor.ImGuiLayer;
 
 public class SandboxApp extends Application {
@@ -12,9 +11,9 @@ public class SandboxApp extends Application {
     public SandboxApp()
     {
         super();
-        this.window = new Window("Sandbox.SandboxApp", 1600, 900);
+        this.window = new Window("SandboxApp", 1600, 900);
 
-        sandboxLayer = new SandoxLayer("gameLayer", 0, this.window, this);
+        sandboxLayer = new SandoxLayer("gameLayer", 0, this);
     }
 
     @Override
@@ -23,7 +22,6 @@ public class SandboxApp extends Application {
 
         this.layerStack.pushLayer(new ImGuiLayer("uiLayer", 1, this));
 
-        this.layerStack.getLayer(ImGuiLayer.class).addEditorWindow(new FileExplorer(this, "src/"));
     }
 
     @Override

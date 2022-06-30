@@ -3,6 +3,7 @@ package com.jrtk.utils;
 import com.Sandbox.Utils;
 import com.jrtk.render.Mesh;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIColor3D;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
@@ -37,6 +38,8 @@ public class ModelLoader {
 
             AIVector3D.Buffer Positions = mesh.mVertices();
             AIVector3D.Buffer Normals = mesh.mNormals();
+            AIVector3D.Buffer TexCoords = mesh.mTextureCoords(0);
+
 
             while(Positions.remaining() > 0)
             {
@@ -49,9 +52,14 @@ public class ModelLoader {
                 vertices.add(aiNormals.x());
                 vertices.add(aiNormals.y());
                 vertices.add(aiNormals.z());
+
+                AIVector3D aiTexCoords = TexCoords.get();
+                vertices.add(aiTexCoords.x());
+                vertices.add(aiTexCoords.y());
+
             }
 
-            meshes[i] = new Mesh(Utils.ListToArray(vertices), 6);
+            meshes[i] = new Mesh(Utils.ListToArray(vertices), 8);
         }
 
         return meshes;

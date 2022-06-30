@@ -49,8 +49,8 @@ public class Window {
             throw new RuntimeException("Failed to create the GLFW window");
 
         glfwSetWindowSizeCallback(windowPtr, (w, newWidth, newHeight)->{
-            this.resolution.x = newWidth;
-            this.resolution.y = newHeight;
+            this.resolution = new Vector2i(newWidth, newHeight);
+            glViewport(0, 0, resolution.x, resolution.y);
         });
 
         // Make the OpenGL context current
@@ -77,21 +77,11 @@ public class Window {
 
     }
 
-    float timer = 0;
-
     public void update()
     {
         //Final frame update
         glfwSwapBuffers(windowPtr);
         glfwPollEvents();
-
-        timer += Time.deltaTime;
-
-        if(timer >= 1)
-        {
-            glfwSetWindowTitle(windowPtr, title + " [FPS: " + (int)(1/ Time.deltaTime) + "]");
-            timer = 0;
-        }
     }
 
     public void delete()

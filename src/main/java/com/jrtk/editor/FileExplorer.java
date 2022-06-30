@@ -25,7 +25,8 @@ public class FileExplorer extends editorWindow{
         super(a);
         folderIcon = new Texture("assets/icons/folder.png", GL_LINEAR).getTexID();
         fileIcon   = new Texture("assets/icons/file.png", GL_LINEAR).getTexID();
-        this.rootFolder = new File(rootFolder);
+
+        this.rootFolder = new File(new File(rootFolder).getAbsolutePath());
     }
 
     @Override
